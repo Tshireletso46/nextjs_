@@ -1,8 +1,8 @@
 import classes from './event-items.module.css';
 import Button from "./ui/button";
 import DateIcon from './event-items.module.css';
-import AddressIcon from './icons/address-icon';
-import 
+// import AddressIcon from './icons/address-icon';
+
 
 function EventItems(props) {
     const {title, image, date, location, id} = props;
