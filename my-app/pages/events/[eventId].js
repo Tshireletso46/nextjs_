@@ -1,18 +1,18 @@
 import { useRouter } from "next/router";
-import { getEventById, getFeaturedEvents } from "../../dummy-data";
+import { getEventById, getFeaturedEvents } from '@/dummy-data';
 import { Fragment } from "react";
-import { getEventById, getAllEvents } from "../../helpers/api-util";
 import EventSummary from "../../components/event-details/event-summary";
 import EventLogistics from "../../components/event-details/event-logistics";
 import EventContent from "../../components/event-details/event-content";
 import ErrorAlert from "../../components/ui/error-alert";
+import Head from "next/head";
 
 
-function EventDetailPage() {
-    const router = useRouter();
-
-    const eventId = router.query.eventId;
+function EventDetailPage(props) {
     const event = props.selectedEvent;
+
+    // const eventId = router.query.eventId;
+    // const event = props.selectedEvent;
 
      if (!event) {
         return (
@@ -24,7 +24,13 @@ function EventDetailPage() {
 
     return(
         <Fragment>
-             <EventSummary title={event.title} />
+        <Head>
+        <title>{event.title}</title>
+        <meta name='description' 
+        content={event.description}
+        />
+        </Head>
+            <EventSummary title={event.title} />
             <EventLogistics 
             date={event.date}  
             address={event.location} 

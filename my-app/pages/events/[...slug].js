@@ -6,6 +6,7 @@ import ResultsTitle from "@/components/events/results-title";
 import Button from "@/components/ui/button";
 import ErrorAlert from "@/components/ui/error-alert";
 import useSWR from "swr";
+import Head from "next/head";
 
 
 function FilteredEventsPage() {
@@ -32,15 +33,30 @@ function FilteredEventsPage() {
 }
    }, [data]);
 
-    if (!filterData) {
-        return <p className='center'>Loading...</p>
-    }
-    
-    const filteredYear = filterData[0];
-    const filteredMonth = filterData[1];
+   let pageHeadData = (
+    <Head>
+    <title>Filtered Events</title>
+    <meta 
+    name='description' 
+    content={`A list of filtered events.`}
+    />
+    </Head>
+   ) ;
 
-    const numYear =+filteredYear;
-    const numMonth =+filteredMonth;
+    if (!loadedEvents) {
+        return (
+        <Fragment>
+            {pageHeadData}
+        <p className='center'>Loading...</p>
+        </Fragment> 
+        );
+    }
+
+    const filteredYear = filterData[0];
+   const filteredMonth = filterData[1];
+
+   const numYear =+filteredYear;
+   const numMonth =+filteredMonth;
 
     if ( 
         isNaN(numYear) ||
@@ -53,6 +69,7 @@ function FilteredEventsPage() {
         ) { 
            return(
            <Fragment>
+            {pageHeadData}
             <ErrorAlert>
             <p>Invalid filter. Please adjust your value!</p>;
             </ErrorAlert>
@@ -75,6 +92,7 @@ function FilteredEventsPage() {
 if (!filteredEvents || filteredEvents.length === 0) {
     return(
         <Fragment>
+            {pageHeadData}
             <p>No events found for the chosen filter!</p>
             <div className="center">
             <Button link="/events"> Show All Events</Button>
@@ -87,51 +105,52 @@ const date = new Date(numYear, numMonth -1)
 
     return (
         <Fragment>
+            {pageHeadData}
             <ResultsTitle date={date} />
             <EventList items={filteredEvents} />
         </Fragment>
     );
 }
 
-export async function getSeverSideProps(context) {
-    const {params} = context;
+// export async function getSeverSideProps(context) {
+//     const {params} = context;
 
-    const filterData = params.slug;
+//     const filterData = params.slug;
 
-    const filteredYear = filterData[0];
-    const filteredMonth = filterData[1];
+//     const filteredYear = filterData[0];
+//     const filteredMonth = filterData[1];
 
-    const numYear =+filteredYear;
-    const numMonth =+filteredMonth;
+//     const numYear =+filteredYear;
+//     const numMonth =+filteredMonth;
 
-    if (
-        isNaN(numYear) ||
-        isNaN(numMonth) ||
-        numYear > 2030 ||
-        numYear < 2021 ||
-        numMonth < 1 ||
-        numMonth > 12 
-    ) {
-       return{
-        props: {hasError: true}
+//     if (
+//         isNaN(numYear) ||
+//         isNaN(numMonth) ||
+//         numYear > 2030 ||
+//         numYear < 2021 ||
+//         numMonth < 1 ||
+//         numMonth > 12 
+//     ) {
+//        return{
+//         props: {hasError: true}
 
-    };
-}
+//     };
+// }
 
-    const filteredEvents = await getFilteredEvents({
-        year: numYear,
-        month: numMonth,
-    });
+//     const filteredEvents = await getFilteredEvents({
+//         year: numYear,
+//         month: numMonth,
+//     });
 
-    return{ 
-        props: {
-            events: filteredEvents,
-            date: {
-                year: numYear,
-                month: numMonth
-            }
-        },
-    };
-}
+//     return{ 
+//         props: {
+//             events: filteredEvents,
+//             date: {
+//                 year: numYear,
+//                 month: numMonth
+//             }
+//         },
+//     };
+// }
 
 export default FilteredEventsPage;
